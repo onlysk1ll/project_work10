@@ -1,0 +1,49 @@
+---
+- hosts: "app"
+  tasks:
+    
+    - name: Check and print linux version
+      debug: 
+       var: ansible_os_family      
+
+          
+    - name: add docker repository to yum
+      when: ansible_os_family == "Redhat"
+      yum_repository:
+            name: docker
+            description: docer  repository
+            baseurl: https://download.docker.com/linux/centos/$releasever/$basearch/stable
+            enabled: 1
+            gpgcheck: 1
+            gpgkey: https://download.docker.com/linux/centos/gpg
+
+    - name: yum install
+      package: name=docker-ce state=latest
+      when: ansible_os_family == "Redhat"
+
+    - name: apt install docker
+      apt: name=docker.io state=latest
+      when: ansible_os_family == "Debian"
+
+    - name: "start docker"
+      service:
+        name: docker
+        state: started
+ 
+    - name: Add a user onlysk1ll and add them to a group docker
+      user:
+          name: onlysk1ll
+          groups: docker
+          append: yes
+
+          
+- hosts: "database"
+  tasks:
+
+    - name: install posgresql-server on ubuntu
+      apt: name=postgresql-server-{{ version }}
+
+    - name: start postgresql.service
+      service:
+          name: postgresql
+          state: started

@@ -1,0 +1,16 @@
+---
+all:
+        app:
+        web:
+        database:        
+app:
+        hosts:
+                158.160.11.202:
+                158.160.17.252:        
+web:
+        hosts:
+                localhost:
+database:
+        hosts:  
+                localhost:
+
